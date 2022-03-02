@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface GendersRepository extends JpaRepository<GendersEntity, String> {
+
+    boolean existsById(Integer id);
 }

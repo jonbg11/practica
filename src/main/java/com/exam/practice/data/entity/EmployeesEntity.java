@@ -34,13 +34,13 @@ public class EmployeesEntity {
      * Atributo para Id de Genero.
      */
     @Column(name = "GENDER_ID")
-    private Integer genderId;
+    private Integer gender_id;
 
     /**
      * Atributo para Id de Trabajo.
      */
     @Column(name = "JOB_ID")
-    private Integer jobId;
+    private Integer job_id;
 
     /**
      * Atributo para Nombre.
