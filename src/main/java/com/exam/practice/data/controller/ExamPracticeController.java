@@ -1,12 +1,18 @@
 package com.exam.practice.data.controller;
 
 import com.exam.practice.data.dto.AddEmployeeResponse;
+import com.exam.practice.data.dto.AddHoursEmployeeResponse;
+import com.exam.practice.data.dto.EmployeesHoursRequest;
 import com.exam.practice.data.dto.EmployeesRequest;
+import com.exam.practice.data.service.EmployeesHoursService;
 import com.exam.practice.data.service.EmployeesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Capa controller que expone los endpoints de las distintas operaciones.
@@ -16,10 +22,16 @@ import org.springframework.web.bind.annotation.*;
 public class ExamPracticeController {
 
     /**
-     * Componente service de Persona.
+     * Componente service de empleado.
      */
     @Autowired
     private EmployeesService employeesService;
+
+    /**
+     * Componente service de horas trabajadas.
+     */
+    @Autowired
+    private EmployeesHoursService employeesHoursService;
 
     /** The constant error. */
     private static final int CODERROR = 500;
@@ -35,7 +47,7 @@ public class ExamPracticeController {
     public static final int CODENOTINFO = 404;
 
     /**
-     * Operacion que devuelve todos los registros.
+     * Operacion que inserta un nuevo empleado.
      *
      * @param request the request
      * @return the response entity
@@ -43,6 +55,18 @@ public class ExamPracticeController {
     @PostMapping("/insertEmployee")
     public ResponseEntity<AddEmployeeResponse> insertEmployee(final @RequestBody EmployeesRequest request) {
         AddEmployeeResponse response = employeesService.insertEmployees(request);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    /**
+     * Operacion que inserta horas trabajadas de un empleado.
+     *
+     * @param request the request
+     * @return the response entity
+     */
+    @PostMapping("/insertHoursEmployee")
+    public ResponseEntity<AddHoursEmployeeResponse> insertHoursEmployee(final @RequestBody EmployeesHoursRequest request) {
+        AddHoursEmployeeResponse response = employeesHoursService.insertHoursEmployees(request);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

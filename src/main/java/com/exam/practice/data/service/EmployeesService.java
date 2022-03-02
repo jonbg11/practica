@@ -16,7 +16,7 @@ import java.time.Period;
 import java.util.List;
 
 /**
- * ervicio que contiene la logica de negocio para Empleados.
+ * Servicio que contiene la logica de negocio para Empleados.
  */
 @Service
 public class EmployeesService {
@@ -63,7 +63,6 @@ public class EmployeesService {
 
         LocalDate fechaNac = LocalDate.parse(new SimpleDateFormat("yyyy-MM-dd")
                 .format(request.getBirthdate()));
-
         LocalDate dateNow = LocalDate.now();
         Period periodo = Period.between(fechaNac, dateNow);
         int yearsOld = periodo.getYears();
