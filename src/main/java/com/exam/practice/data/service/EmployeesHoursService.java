@@ -2,6 +2,8 @@ package com.exam.practice.data.service;
 
 import com.exam.practice.data.dto.AddHoursEmployeeResponse;
 import com.exam.practice.data.dto.EmployeesHoursRequest;
+import com.exam.practice.data.dto.GetEmployeesHoursRequest;
+import com.exam.practice.data.dto.GetHoursEmployeeResponse;
 import com.exam.practice.data.entity.EmployeeWorkedHoursEntity;
 import com.exam.practice.data.repository.EmployeeWorkedHoursRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +81,51 @@ public class EmployeesHoursService {
             response.setId(null);
             response.setSuccess(false);
         }
+
+        return response;
+    }
+
+    /**
+     * Obtener horas trabajadas.
+     *
+     * @param request the request
+     * @return the worked hours
+     */
+    public GetHoursEmployeeResponse getWorkedHours(final GetEmployeesHoursRequest request) {
+
+        GetHoursEmployeeResponse response = new GetHoursEmployeeResponse();
+
+        List<EmployeeWorkedHoursEntity> existEmployee = employeeWorkedHoursRepository.
+                findAllByEmployeeId(request.getEmployee_id());
+
+        if (existEmployee.isEmpty()) {
+            response.setTotal_worked_hours(null);
+            response.setSuccess(false);
+            return response;
+        }
+
+        request.getStart_date().setHours(0);
+        request.getStart_date().setMinutes(0);
+        request.getStart_date().setSeconds(0);
+        Timestamp startDate = new Timestamp(request.getStart_date().getTime());
+
+        request.getEnd_date().setHours(0);
+        request.getEnd_date().setMinutes(0);
+        request.getEnd_date().setSeconds(0);
+        Timestamp endDate = new Timestamp(request.getEnd_date().getTime());
+
+        List<EmployeeWorkedHoursEntity> items = employeeWorkedHoursRepository.
+                findAllByWorkedDateBetween(startDate, endDate);
+
+        if (items.isEmpty()) {
+            response.setTotal_worked_hours(null);
+            response.setSuccess(false);
+            return response;
+        }
+
+        Integer sum = items.stream().mapToInt(EmployeeWorkedHoursEntity::getWorkedHours).sum();
+        response.setTotal_worked_hours(sum);
+        response.setSuccess(true);
 
         return response;
     }

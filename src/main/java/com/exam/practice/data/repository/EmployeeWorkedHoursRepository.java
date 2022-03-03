@@ -10,5 +10,9 @@ import java.util.List;
 @Repository
 public interface EmployeeWorkedHoursRepository extends JpaRepository<EmployeeWorkedHoursEntity, String> {
 
+    List<EmployeeWorkedHoursEntity> findAllByEmployeeId(Integer id);
+
     List<EmployeeWorkedHoursEntity> findAllByEmployeeIdAndWorkedDate(Integer id, Date workedDate);
+
+    List<EmployeeWorkedHoursEntity> findAllByWorkedDateBetween(Date startDate, Date endDate);
 }
