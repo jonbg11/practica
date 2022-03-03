@@ -10,4 +10,6 @@ import java.util.List;
 public interface EmployeesRepository extends JpaRepository<EmployeesEntity, String> {
 
     List<EmployeesEntity> findAllByNameAndLastName(String name, String lastName);
+
+    List<EmployeesEntity> findAllById(Integer id);
 }

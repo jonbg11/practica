@@ -2,7 +2,12 @@ package com.exam.practice.data.service;
 
 import com.exam.practice.data.dto.AddEmployeeResponse;
 import com.exam.practice.data.dto.EmployeesRequest;
+import com.exam.practice.data.dto.GetEmployeesSalaryRequest;
+import com.exam.practice.data.dto.GetSalaryEmployeeResponse;
+import com.exam.practice.data.entity.EmployeeWorkedHoursEntity;
 import com.exam.practice.data.entity.EmployeesEntity;
+import com.exam.practice.data.entity.JobsEntity;
+import com.exam.practice.data.repository.EmployeeWorkedHoursRepository;
 import com.exam.practice.data.repository.EmployeesRepository;
 import com.exam.practice.data.repository.GendersRepository;
 import com.exam.practice.data.repository.JobsRepository;
@@ -10,6 +15,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
@@ -38,6 +44,12 @@ public class EmployeesService {
      */
     @Autowired
     private GendersRepository gendersRepository;
+
+    /**
+     * Componente repository de Empleados.
+     */
+    @Autowired
+    private EmployeeWorkedHoursRepository employeeWorkedHoursRepository;
 
     /** The constant 18. */
     private static final int MAYOR_YEARS = 18;
@@ -94,6 +106,58 @@ public class EmployeesService {
             response.setId(null);
             response.setSuccess(false);
         }
+        return response;
+    }
+
+    /**
+     * Obtiene salario de empleado.
+     *
+     * @param request the request
+     * @return the salary
+     */
+    public GetSalaryEmployeeResponse getSalary(final GetEmployeesSalaryRequest request) {
+
+        GetSalaryEmployeeResponse response = new GetSalaryEmployeeResponse();
+
+        List<EmployeesEntity> employee = employeesRepository.findAllById(request.getEmployee_id());
+
+        if (employee.isEmpty()) {
+            response.setPayment(null);
+            response.setSuccess(false);
+            return response;
+        }
+
+        request.getStart_date().setHours(0);
+        request.getStart_date().setMinutes(0);
+        request.getStart_date().setSeconds(0);
+        Timestamp startDate = new Timestamp(request.getStart_date().getTime());
+
+        request.getEnd_date().setHours(0);
+        request.getEnd_date().setMinutes(0);
+        request.getEnd_date().setSeconds(0);
+        Timestamp endDate = new Timestamp(request.getEnd_date().getTime());
+
+        List<EmployeeWorkedHoursEntity> items = employeeWorkedHoursRepository.
+                findAllByWorkedDateBetween(startDate, endDate);
+
+        if (items.isEmpty()) {
+            response.setPayment(null);
+            response.setSuccess(false);
+            return response;
+        }
+
+        List<JobsEntity> jobs = jobsRepository.findAllById(employee.get(0).getJob_id());
+
+        if (jobs.isEmpty()) {
+            response.setPayment(null);
+            response.setSuccess(false);
+            return response;
+        }
+
+        double mul = jobs.get(0).getSalary() * items.size();
+        response.setPayment(mul);
+        response.setSuccess(true);
+
         return response;
     }
 }

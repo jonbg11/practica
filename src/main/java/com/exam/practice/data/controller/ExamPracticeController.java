@@ -1,11 +1,6 @@
 package com.exam.practice.data.controller;
 
-import com.exam.practice.data.dto.AddEmployeeResponse;
-import com.exam.practice.data.dto.AddHoursEmployeeResponse;
-import com.exam.practice.data.dto.EmployeesHoursRequest;
-import com.exam.practice.data.dto.EmployeesRequest;
-import com.exam.practice.data.dto.GetEmployeesHoursRequest;
-import com.exam.practice.data.dto.GetHoursEmployeeResponse;
+import com.exam.practice.data.dto.*;
 import com.exam.practice.data.service.EmployeesHoursService;
 import com.exam.practice.data.service.EmployeesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,8 +87,8 @@ public class ExamPracticeController {
      * @return the response entity
      */
     @GetMapping("/getSalaryEmployee")
-    public ResponseEntity<GetHoursEmployeeResponse> getSalaryEmployee(final @RequestBody GetEmployeesHoursRequest request) {
-        GetHoursEmployeeResponse response = employeesHoursService.getWorkedHours(request);
+    public ResponseEntity<GetSalaryEmployeeResponse> getSalaryEmployee(final @RequestBody GetEmployeesSalaryRequest request) {
+        GetSalaryEmployeeResponse response = employeesService.getSalary(request);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
