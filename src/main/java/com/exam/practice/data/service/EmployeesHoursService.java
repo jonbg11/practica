@@ -7,6 +7,7 @@ import com.exam.practice.data.repository.EmployeeWorkedHoursRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.List;
@@ -52,17 +53,18 @@ public class EmployeesHoursService {
             return response;
         }
 
+        request.getWorked_date().setHours(0);
+        request.getWorked_date().setMinutes(0);
+        request.getWorked_date().setSeconds(0);
+        Timestamp ts = new Timestamp(request.getWorked_date().getTime());
+
         List<EmployeeWorkedHoursEntity> existItem = employeeWorkedHoursRepository
-                .findAllByEmployeeId(request.getEmployee_id());
+                .findAllByEmployeeIdAndWorkedDate(request.getEmployee_id(), ts);
 
         if (!existItem.isEmpty()) {
-            LocalDate fechaWorkBd = LocalDate.parse(new SimpleDateFormat("yyyy-MM-dd")
-                    .format(existItem.get(0).getWorkedDate()));
-            if (fechaWorkBd.isEqual(fechaWork)) {
-                response.setId(null);
-                response.setSuccess(false);
-                return response;
-            }
+            response.setId(null);
+            response.setSuccess(false);
+            return response;
         }
 
         try {
